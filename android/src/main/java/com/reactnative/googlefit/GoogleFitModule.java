@@ -153,6 +153,20 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
     }
 
     @ReactMethod
+    public void saveStep(ReadableMap stepData,
+                         Callback errorCallback,
+                         Callback successCallback) {
+
+        try {
+            StepHistory stepHistory = mGoogleFitManager.getStepHistory();
+            stepHistory.setDataType(DataType.TYPE_DISTANCE_DELTA);
+            successCallback.invoke(stepHistory.save(stepData));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void getActivitySamples(double startDate,
                                    double endDate,
                                    Callback errorCallback,
@@ -200,6 +214,33 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
             DistanceHistory distanceHistory = mGoogleFitManager.getDistanceHistory();
             distanceHistory.setDataType(DataType.TYPE_DISTANCE_DELTA);
             successCallback.invoke(distanceHistory.save(distanceData));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getDailyBodyFatSamples(double startDate,
+                                        double endDate,
+                                        Callback errorCallback,
+                                        Callback successCallback) {
+
+        try {
+            successCallback.invoke(mGoogleFitManager.getBodyFatHistory().aggregateDataByDate((long) startDate, (long) endDate));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void saveBodyFat(ReadableMap bodyFatData,
+                             Callback errorCallback,
+                             Callback successCallback) {
+
+        try {
+            BodyFatHistory bodyFatHistory = mGoogleFitManager.getBodyFatHistory();
+            bodyFatHistory.setDataType(DataType.TYPE_BODY_FAT_PERCENTAGE);
+            successCallback.invoke(bodyFatHistory.save(bodyFatData));
         } catch (IllegalViewOperationException e) {
             errorCallback.invoke(e.getMessage());
         }

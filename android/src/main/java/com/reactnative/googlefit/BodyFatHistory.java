@@ -1,13 +1,3 @@
-/**
- * Copyright (c) 2017-present, Stanislav Doskalenko - doskalenko.s@gmail.com
- * All rights reserved.
- * <p>
- * This source code is licensed under the MIT-style license found in the
- * LICENSE file in the root directory of this source tree.
- * <p>
- * Based on Asim Malik android source code, copyright (c) 2015
- **/
-
 package com.reactnative.googlefit;
 
 import android.os.AsyncTask;
@@ -32,28 +22,27 @@ import com.google.android.gms.fitness.result.DataReadResult;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class DistanceHistory {
+public class BodyFatHistory {
 
     private ReactContext mReactContext;
     private GoogleFitManager googleFitManager;
     private DataSet Dataset;
     private DataType dataType;
 
-    private static final String TAG = "DistanceHistory";
+    private static final String TAG = "RNGoogleFit";
 
-    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType) {
+    public BodyFatHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType) {
         this.mReactContext = reactContext;
         this.googleFitManager = googleFitManager;
         this.dataType = dataType;
     }
 
-    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager) {
-        this(reactContext, googleFitManager, DataType.TYPE_DISTANCE_DELTA);
+    public BodyFatHistory(ReactContext reactContext, GoogleFitManager googleFitManager) {
+        this(reactContext, googleFitManager, DataType.TYPE_BODY_FAT_PERCENTAGE);
     }
 
     public void setDataType(DataType dataType) {
@@ -68,7 +57,7 @@ public class DistanceHistory {
 
         //Check how much distance were walked and recorded in specified days
         DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
+                .aggregate(DataType.TYPE_BODY_FAT_PERCENTAGE, DataType.AGGREGATE_BODY_FAT_PERCENTAGE_SUMMARY)
                 .bucketByTime(1, TimeUnit.DAYS)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
@@ -125,7 +114,7 @@ public class DistanceHistory {
                 stepMap.putString("day", day);
                 stepMap.putDouble("startDate", dp.getStartTime(TimeUnit.MILLISECONDS));
                 stepMap.putDouble("endDate", dp.getEndTime(TimeUnit.MILLISECONDS));
-                stepMap.putDouble("distance", dp.getValue(field).asFloat());
+                stepMap.putDouble("bodyFatValue", dp.getValue(field).asFloat());
                 map.pushMap(stepMap);
             }
         }
@@ -133,13 +122,14 @@ public class DistanceHistory {
 
     public boolean save(ReadableMap sample) {
         this.Dataset = createDataForRequest(
-                this.dataType,    // for distance, it would be DataType.TYPE_DISTANCE_DELTA
+                this.dataType,    // for BodyFat, it would be DataType.TYPE_BODY_FAT_PERCENTAGE
                 DataSource.TYPE_RAW,
-                sample.getDouble("value"),                  // meter
+                sample.getDouble("value"),                  // kilo
                 (long) sample.getDouble("date") - 3600,              // start time
+                (long) sample.getDouble("date"),              // end time
                 TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
         );
-        new DistanceHistory.InsertAndVerifyDataTask(this.Dataset).execute();
+        new BodyFatHistory.InsertAndVerifyDataTask(this.Dataset).execute();
 
         return true;
     }
@@ -181,31 +171,28 @@ public class DistanceHistory {
 
     /**
      * This method creates a dataset object to be able to insert data in google fit
-     * @param dataType DataType Fitness Data Type object
+     *
+     * @param dataType       DataType Fitness Data Type object
      * @param dataSourceType int Data Source Id. For example, DataSource.TYPE_RAW
-     * @param value Object Values for the fitness data. They must be int or float
-     * @param startTime long Time when the fitness activity started
-     * @param timeUnit TimeUnit Time unit in which period is expressed
+     * @param value          Object Values for the fitness data. They must be int or float
+     * @param startTime      long Time when the fitness activity started
+     * @param endTime        long Time when the fitness activity ended
+     * @param timeUnit       TimeUnit Time unit in which period is expressed
      * @return
      */
     private DataSet createDataForRequest(DataType dataType, int dataSourceType, Double value,
-                                         long startTime, TimeUnit timeUnit) {
+                                         long startTime, long endTime, TimeUnit timeUnit) {
         DataSource dataSource = new DataSource.Builder()
                 .setAppPackageName(GoogleFitPackage.PACKAGE_NAME)
                 .setDataType(dataType)
                 .setType(dataSourceType)
                 .build();
 
-        Calendar calendar = Calendar.getInstance();
-        Date now = new Date();
-        calendar.setTime(now);
-        long endTime = calendar.getTimeInMillis();
-
         DataSet dataSet = DataSet.create(dataSource);
         DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit);
 
         float f1 = Float.valueOf(value.toString());
-        dataPoint.getValue(Field.FIELD_DISTANCE).setFloat(f1);
+        dataPoint.setFloatValues(f1);
 
         dataSet.add(dataPoint);
 
@@ -213,4 +200,3 @@ public class DistanceHistory {
     }
 
 }
-
