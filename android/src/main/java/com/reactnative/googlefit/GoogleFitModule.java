@@ -192,6 +192,20 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
     }
 
     @ReactMethod
+    public void saveDistance(ReadableMap distanceData,
+                           Callback errorCallback,
+                           Callback successCallback) {
+
+        try {
+            DistanceHistory distanceHistory = mGoogleFitManager.getDistanceHistory();
+            distanceHistory.setDataType(DataType.TYPE_DISTANCE_DELTA);
+            successCallback.invoke(distanceHistory.save(distanceData));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void getWeightSamples(double startDate,
                                  double endDate,
                                  Callback errorCallback,

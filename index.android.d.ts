@@ -46,15 +46,23 @@ declare module 'react-native-google-fit' {
       callback: (isError: boolean, result: any) => void
     ): void
 
+    saveDistance: (
+      options: any,
+      callback: (isError: boolean, result: any) => void
+    ) => void
+
     /**
      * Get the total steps per day over a specified date range.
-      * @param {Object} options getUserInputSteps accepts an options object containing required startDate: ISO8601Timestamp and endDate: ISO8601Timestamp.
-      * @param {Function} callback The function will be called with an array of elements.
-      */
-    getUserInputSteps: (options: {
-        startDate: string,
-        endDate: string,
-    }, callback: (isError?: boolean, result?: number)=> void ) => void;
+     * @param {Object} options getUserInputSteps accepts an options object containing required startDate: ISO8601Timestamp and endDate: ISO8601Timestamp.
+     * @param {Function} callback The function will be called with an array of elements.
+     */
+    getUserInputSteps: (
+      options: {
+        startDate: string
+        endDate: string
+      },
+      callback: (isError?: boolean, result?: number) => void
+    ) => void
 
     /**
      * Get the total distance per day over a specified date range.

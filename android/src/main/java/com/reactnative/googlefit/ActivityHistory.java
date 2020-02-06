@@ -49,7 +49,6 @@ import java.util.ArrayList;
 
 
 import static com.google.android.gms.fitness.data.Device.TYPE_WATCH;
-// Ken Hoang custom
 public class ActivityHistory {
 
     private ReactContext mReactContext;
