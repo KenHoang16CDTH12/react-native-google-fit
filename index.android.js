@@ -156,6 +156,19 @@ class RNGoogleFit {
     this._retrieveDailyStepCountSamples(startDate, endDate, callback)
   }
 
+  saveStep(options, callback) {
+    options.date = Date.parse(options.date)
+    googleFit.saveStep(
+      options,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
+  }
+
   /**
    * Get the total steps per day over a specified date range.
    * @param {Object} options getUserInputSteps accepts an options object containing required startDate: ISO8601Timestamp and endDate: ISO8601Timestamp.
@@ -184,7 +197,6 @@ class RNGoogleFit {
    * @param {Object} options getDailyDistanceSamples accepts an options object containing required startDate: ISO8601Timestamp and endDate: ISO8601Timestamp.
    * @param {function} callback The function will be called with an array of elements.
    */
-
   getDailyDistanceSamples(options, callback) {
     const startDate = !isNil(options.startDate)
       ? Date.parse(options.startDate)
@@ -211,6 +223,47 @@ class RNGoogleFit {
   saveDistance(options, callback) {
     options.date = Date.parse(options.date)
     googleFit.saveDistance(
+      options,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
+  }
+
+  /**
+   * Get the total bodyfat per day over a specified date range.
+   * @param {Object} options getBodyFatSamples accepts an options object containing required startDate: ISO8601Timestamp and endDate: ISO8601Timestamp.
+   * @param {function} callback The function will be called with an array of elements.
+   */
+  getDailyBodyFatSamples(options, callback) {
+    const startDate = !isNil(options.startDate)
+      ? Date.parse(options.startDate)
+      : new Date().setHours(0, 0, 0, 0)
+    const endDate = !isNil(options.endDate)
+      ? Date.parse(options.endDate)
+      : new Date().valueOf()
+    googleFit.getDailyBodyFatSamples(
+      startDate,
+      endDate,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        if (res.length > 0) {
+          callback(false, prepareResponse(res, 'bodyfat'))
+        } else {
+          callback('There is no any bodyfat data for this period', false)
+        }
+      }
+    )
+  }
+
+  saveBodyFat(options, callback) {
+    options.date = Date.parse(options.date)
+    googleFit.saveBodyFat(
       options,
       msg => {
         callback(msg, false)
