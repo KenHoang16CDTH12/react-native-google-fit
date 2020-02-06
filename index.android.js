@@ -1,8 +1,15 @@
 'use strict'
-import { DeviceEventEmitter, NativeModules } from 'react-native';
+import { DeviceEventEmitter, NativeModules } from 'react-native'
 
-import PossibleScopes from './src/scopes';
-import { buildDailySteps, isNil, KgToLbs, lbsAndOzToK, prepareDailyResponse, prepareResponse } from './src/utils';
+import PossibleScopes from './src/scopes'
+import {
+  buildDailySteps,
+  isNil,
+  KgToLbs,
+  lbsAndOzToK,
+  prepareDailyResponse,
+  prepareResponse,
+} from './src/utils'
 
 const googleFit = NativeModules.RNGoogleFit
 
@@ -156,12 +163,18 @@ class RNGoogleFit {
    */
 
   getUserInputSteps = (options, callback) => {
-    const startDate = !isNil(options.startDate) ? Date.parse(options.startDate) : (new Date()).setHours(0, 0, 0, 0)
-    const endDate = !isNil(options.endDate) ? Date.parse(options.endDate) : (new Date()).valueOf()
-    googleFit.getUserInputSteps(startDate, endDate,
-      (msg) => callback(msg, false),
-      (res) => {
-        callback(null, res);
+    const startDate = !isNil(options.startDate)
+      ? Date.parse(options.startDate)
+      : new Date().setHours(0, 0, 0, 0)
+    const endDate = !isNil(options.endDate)
+      ? Date.parse(options.endDate)
+      : new Date().valueOf()
+    googleFit.getUserInputSteps(
+      startDate,
+      endDate,
+      msg => callback(msg, false),
+      res => {
+        callback(null, res)
       }
     )
   }
@@ -191,6 +204,19 @@ class RNGoogleFit {
         } else {
           callback('There is no any distance data for this period', false)
         }
+      }
+    )
+  }
+
+  saveDistance(options, callback) {
+    options.date = Date.parse(options.date)
+    googleFit.saveDistance(
+      options,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
       }
     )
   }
@@ -305,7 +331,10 @@ class RNGoogleFit {
               return el
             }
           })
-          callback(false, res.filter(day => !isNil(day)))
+          callback(
+            false,
+            res.filter(day => !isNil(day))
+          )
         } else {
           callback('There is no any weight data for this period', false)
         }
