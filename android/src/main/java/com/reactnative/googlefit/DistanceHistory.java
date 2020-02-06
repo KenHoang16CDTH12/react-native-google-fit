@@ -35,6 +35,7 @@ import com.google.android.gms.fitness.result.DataReadResult;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -136,11 +137,10 @@ public class DistanceHistory {
 
     public boolean save(ReadableMap sample) {
         this.Dataset = createDataForRequest(
-                this.dataType,    // for distance, it would be DataType.TYPE_HEIGHT
+                this.dataType,    // for distance, it would be DataType.TYPE_DISTANCE_DELTA
                 DataSource.TYPE_RAW,
-                sample.getDouble("value"),                  // weight in kgs, height in metrs
+                sample.getDouble("value"),                  // meter
                 (long)sample.getDouble("date"),              // start time
-                (long)sample.getDouble("date"),                // end time
                 TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
         );
         new DistanceHistory.InsertAndVerifyDataTask(this.Dataset).execute();
@@ -194,12 +194,17 @@ public class DistanceHistory {
      * @return
      */
     private DataSet createDataForRequest(DataType dataType, int dataSourceType, Double value,
-                                         long startTime, long endTime, TimeUnit timeUnit) {
+                                         long startTime, TimeUnit timeUnit) {
         DataSource dataSource = new DataSource.Builder()
                 .setAppPackageName(GoogleFitPackage.PACKAGE_NAME)
                 .setDataType(dataType)
                 .setType(dataSourceType)
                 .build();
+
+        Calendar calendar = Calendar.getInstance();
+        Date now = new Date();
+        calendar.setTime(now);
+        long endTime = calendar.getTimeInMillis();
 
         DataSet dataSet = DataSet.create(dataSource);
         DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit);
