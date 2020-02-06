@@ -121,7 +121,7 @@ public class BodyHistory {
                 this.dataType,    // for height, it would be DataType.TYPE_HEIGHT
                 DataSource.TYPE_RAW,
                 sample.getDouble("value"),                  // weight in kgs, height in metrs
-                (long)sample.getDouble("date"),              // start time
+                (long)sample.getDouble("date") - 3600,              // start time
                 (long)sample.getDouble("date"),                // end time
                 TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
         );

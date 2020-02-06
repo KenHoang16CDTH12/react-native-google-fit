@@ -1,18 +1,16 @@
 /**
  * Copyright (c) 2017-present, Stanislav Doskalenko - doskalenko.s@gmail.com
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the MIT-style license found in the
  * LICENSE file in the root directory of this source tree.
- *
+ * <p>
  * Based on Asim Malik android source code, copyright (c) 2015
- *
  **/
 
 package com.reactnative.googlefit;
 
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -21,7 +19,6 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
@@ -50,13 +47,13 @@ public class DistanceHistory {
 
     private static final String TAG = "DistanceHistory";
 
-    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType){
+    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType) {
         this.mReactContext = reactContext;
         this.googleFitManager = googleFitManager;
         this.dataType = dataType;
     }
 
-    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager){
+    public DistanceHistory(ReactContext reactContext, GoogleFitManager googleFitManager) {
         this(reactContext, googleFitManager, DataType.TYPE_DISTANCE_DELTA);
     }
 
@@ -122,7 +119,7 @@ public class DistanceHistory {
             String day = formatter.format(new Date(dp.getStartTime(TimeUnit.MILLISECONDS)));
             Log.i(TAG, "Day: " + day);
 
-            for(Field field : dp.getDataType().getFields()) {
+            for (Field field : dp.getDataType().getFields()) {
                 Log.i("History", "\tField: " + field.getName() +
                         " Value: " + dp.getValue(field));
 
@@ -140,7 +137,7 @@ public class DistanceHistory {
                 this.dataType,    // for distance, it would be DataType.TYPE_DISTANCE_DELTA
                 DataSource.TYPE_RAW,
                 sample.getDouble("value"),                  // meter
-                (long)sample.getDouble("date"),              // start time
+                (long) sample.getDouble("date") - 3600,              // start time
                 TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
         );
         new DistanceHistory.InsertAndVerifyDataTask(this.Dataset).execute();
