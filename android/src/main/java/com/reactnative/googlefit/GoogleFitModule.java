@@ -159,7 +159,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
 
         try {
             StepHistory stepHistory = mGoogleFitManager.getStepHistory();
-            stepHistory.setDataType(DataType.TYPE_DISTANCE_DELTA);
+            stepHistory.setDataType(DataType.TYPE_STEP_COUNT_DELTA);
             successCallback.invoke(stepHistory.save(stepData));
         } catch (IllegalViewOperationException e) {
             errorCallback.invoke(e.getMessage());

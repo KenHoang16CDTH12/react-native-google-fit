@@ -253,7 +253,7 @@ class RNGoogleFit {
       },
       res => {
         if (res.length > 0) {
-          callback(false, prepareResponse(res, 'bodyfat'))
+          callback(false, prepareResponse(res, 'bodyFatValue'))
         } else {
           callback('There is no any bodyfat data for this period', false)
         }

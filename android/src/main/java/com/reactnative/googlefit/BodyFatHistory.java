@@ -33,7 +33,7 @@ public class BodyFatHistory {
     private DataSet Dataset;
     private DataType dataType;
 
-    private static final String TAG = "RNGoogleFit";
+    private static final String TAG = "BodyFatHistory";
 
     public BodyFatHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType) {
         this.mReactContext = reactContext;
@@ -95,7 +95,6 @@ public class BodyFatHistory {
         DateFormat timeFormat = DateFormat.getTimeInstance();
         Format formatter = new SimpleDateFormat("EEE");
 
-        WritableMap stepMap = Arguments.createMap();
 
 
         for (DataPoint dp : dataSet.getDataPoints()) {
@@ -108,14 +107,15 @@ public class BodyFatHistory {
             Log.i(TAG, "Day: " + day);
 
             for (Field field : dp.getDataType().getFields()) {
-                Log.i("History", "\tField: " + field.getName() +
+                Log.i("BodyFatHistory", "\tField: " + field.getName() +
                         " Value: " + dp.getValue(field));
 
-                stepMap.putString("day", day);
-                stepMap.putDouble("startDate", dp.getStartTime(TimeUnit.MILLISECONDS));
-                stepMap.putDouble("endDate", dp.getEndTime(TimeUnit.MILLISECONDS));
-                stepMap.putDouble("bodyFatValue", dp.getValue(field).asFloat());
-                map.pushMap(stepMap);
+                WritableMap bodyFatMap = Arguments.createMap();
+                bodyFatMap.putString("day", day);
+                bodyFatMap.putDouble("startDate", dp.getStartTime(TimeUnit.MILLISECONDS));
+                bodyFatMap.putDouble("endDate", dp.getEndTime(TimeUnit.MILLISECONDS));
+                bodyFatMap.putDouble("bodyFatValue", dp.getValue(field).asFloat());
+                map.pushMap(bodyFatMap);
             }
         }
     }

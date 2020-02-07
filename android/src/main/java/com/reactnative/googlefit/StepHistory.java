@@ -345,7 +345,7 @@ public class StepHistory {
         this.Dataset = createDataForRequest(
                 this.dataType,    // for step, it would be DataType.TYPE_STEP_COUNT_DELTA
                 DataSource.TYPE_RAW,
-                sample.getDouble("value"), // meter
+                sample.getInt("value"), // meter
                 (long) sample.getDouble("date") - 3600, // start time
                 (long) sample.getDouble("date"), // end time
                 TimeUnit.MILLISECONDS   // Time Unit, for example, TimeUnit.MILLISECONDS
@@ -400,7 +400,7 @@ public class StepHistory {
      * @param timeUnit TimeUnit Time unit in which period is expressed
      * @return
      */
-    private DataSet createDataForRequest(DataType dataType, int dataSourceType, Double value,
+    private DataSet createDataForRequest(DataType dataType, int dataSourceType, int value,
                                          long startTime, long endTime, TimeUnit timeUnit) {
         DataSource dataSource = new DataSource.Builder()
                 .setAppPackageName(GoogleFitPackage.PACKAGE_NAME)
@@ -411,8 +411,7 @@ public class StepHistory {
         DataSet dataSet = DataSet.create(dataSource);
         DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit);
 
-        int valueInt = Integer.valueOf(value.toString());
-        dataPoint.getValue(Field.FIELD_STEPS).setInt(valueInt);
+        dataPoint.getValue(Field.FIELD_STEPS).setInt(value);
 
         dataSet.add(dataPoint);
 
