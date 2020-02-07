@@ -320,6 +320,19 @@ class RNGoogleFit {
     )
   }
 
+  saveCalorie(options, callback) {
+    options.date = Date.parse(options.date)
+    googleFit.saveCalorie(
+      options,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
+  }
+
   getDailyNutritionSamples(options, callback) {
     const startDate = Date.parse(options.startDate)
     const endDate = Date.parse(options.endDate)
@@ -556,6 +569,19 @@ class RNGoogleFit {
     )
   }
 
+  saveHeartRate(options, callback) {
+    options.date = Date.parse(options.date)
+    googleFit.saveHeartRate(
+      options,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
+  }
+
   getBloodPressureSamples(options, callback) {
     const startDate = Date.parse(options.startDate)
     const endDate = Date.parse(options.endDate)
@@ -569,7 +595,26 @@ class RNGoogleFit {
         if (res.length > 0) {
           callback(false, prepareResponse(res, 'value'))
         } else {
-          callback('There is no any heart rate data for this period', false)
+          callback('There is no any blood pressure data for this period', false)
+        }
+      }
+    )
+  }
+
+  getBloodGlucoseSamples(options, callback) {
+    const startDate = Date.parse(options.startDate)
+    const endDate = Date.parse(options.endDate)
+    googleFit.getBloodGlucoseSamples(
+      startDate,
+      endDate,
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        if (res.length > 0) {
+          callback(false, prepareResponse(res, 'value'))
+        } else {
+          callback('There is no any blood glucose data for this period', false)
         }
       }
     )

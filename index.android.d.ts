@@ -104,6 +104,11 @@ declare module 'react-native-google-fit' {
       callback: (isError: boolean, result: any) => void
     ): void
 
+    saveCalorie: (
+      options: any,
+      callback: (isError: boolean, result: any) => void
+    ) => void
+
     saveFood(options: FoodIntake, callback: (isError: boolean) => void): void
 
     getDailyNutritionSamples(
@@ -138,7 +143,17 @@ declare module 'react-native-google-fit' {
       callback: (isError: boolean, result: any) => void
     ) => void
 
+    saveHeartRate: (
+      options: any,
+      callback: (isError: boolean, result: any) => void
+    ) => void
+
     getBloodPressureSamples: (
+      options: any,
+      callback: (isError: boolean, result: any) => void
+    ) => void
+
+    getBloodGlucoseSamples: (
       options: any,
       callback: (isError: boolean, result: any) => void
     ) => void

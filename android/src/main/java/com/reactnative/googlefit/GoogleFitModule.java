@@ -26,7 +26,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.LifecycleEventListener;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.HealthDataTypes;
@@ -306,6 +305,20 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
     }
 
     @ReactMethod
+    public void saveCalorie(ReadableMap data,
+                              Callback errorCallback,
+                              Callback successCallback) {
+
+        try {
+            CalorieHistory calorieHistory = mGoogleFitManager.getCalorieHistory();
+            successCallback.invoke(calorieHistory.saveCalorie(data));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+
+    @ReactMethod
     public void saveFood(ReadableMap foodSample,
                          Callback errorCallback,
                          Callback successCallback) {
@@ -417,9 +430,23 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
                                         Callback errorCallback,
                                         Callback successCallback) {
         try {
-            HeartrateHistory heartrateHistory = mGoogleFitManager.getHeartrateHistory();
-            heartrateHistory.setDataType(HealthDataTypes.TYPE_BLOOD_PRESSURE);
-            successCallback.invoke(heartrateHistory.getHistory((long)startDate, (long)endDate));
+            HeartHistory heartHistory = mGoogleFitManager.getHeartHistory();
+            heartHistory.setDataType(HealthDataTypes.TYPE_BLOOD_PRESSURE);
+            successCallback.invoke(heartHistory.getHistory((long)startDate, (long)endDate));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getBloodGlucoseSamples(double startDate,
+                                        double endDate,
+                                        Callback errorCallback,
+                                        Callback successCallback) {
+        try {
+            HeartHistory heartHistory = mGoogleFitManager.getHeartHistory();
+            heartHistory.setDataType(HealthDataTypes.TYPE_BLOOD_GLUCOSE);
+            successCallback.invoke(heartHistory.getHistory((long)startDate, (long)endDate));
         } catch (IllegalViewOperationException e) {
             errorCallback.invoke(e.getMessage());
         }
@@ -432,9 +459,23 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
                                     Callback successCallback) {
 
         try {
-            HeartrateHistory heartrateHistory = mGoogleFitManager.getHeartrateHistory();
-            heartrateHistory.setDataType(DataType.TYPE_HEART_RATE_BPM);
-            successCallback.invoke(heartrateHistory.getHistory((long)startDate, (long)endDate));
+            HeartHistory heartHistory = mGoogleFitManager.getHeartHistory();
+            heartHistory.setDataType(DataType.TYPE_HEART_RATE_BPM);
+            successCallback.invoke(heartHistory.getHistory((long)startDate, (long)endDate));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void saveHeartRate(ReadableMap data,
+                           Callback errorCallback,
+                           Callback successCallback) {
+
+        try {
+            HeartHistory heartHistory = mGoogleFitManager.getHeartHistory();
+            heartHistory.setDataType(DataType.TYPE_HEART_RATE_BPM);
+            successCallback.invoke(heartHistory.save(data));
         } catch (IllegalViewOperationException e) {
             errorCallback.invoke(e.getMessage());
         }

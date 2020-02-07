@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class HeartrateHistory {
+public class HeartHistory {
 
     private ReactContext mReactContext;
     private GoogleFitManager googleFitManager;
@@ -48,13 +48,13 @@ public class HeartrateHistory {
 
     private static final String TAG = "Weights History";
 
-    public HeartrateHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType){
+    public HeartHistory(ReactContext reactContext, GoogleFitManager googleFitManager, DataType dataType){
         this.mReactContext = reactContext;
         this.googleFitManager = googleFitManager;
         this.dataType = dataType;
     }
 
-    public HeartrateHistory(ReactContext reactContext, GoogleFitManager googleFitManager){
+    public HeartHistory(ReactContext reactContext, GoogleFitManager googleFitManager){
         this(reactContext, googleFitManager, DataType.TYPE_WEIGHT);
     }
 
@@ -101,10 +101,10 @@ public class HeartrateHistory {
 
     public boolean save(ReadableMap sample) {
         this.Dataset = createDataForRequest(
-                this.dataType,    // for height, it would be DataType.TYPE_HEIGHT
+                this.dataType,
                 DataSource.TYPE_RAW,
-                sample.getDouble("value"),                  // weight in kgs, height in metrs
-                (long)sample.getDouble("date"),              // start time
+                sample.getDouble("value"),
+                (long)sample.getDouble("date") - 3600,              // start time
                 (long)sample.getDouble("date"),                // end time
                 TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
         );

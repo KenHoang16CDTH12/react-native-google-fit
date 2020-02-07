@@ -261,4 +261,51 @@ public class CalorieHistory {
 
         return dataSet;
     }
+
+    public boolean saveCalorie(ReadableMap sample) {
+        DataSet dataSet = createDataCalorieForRequest(
+                DataType.TYPE_CALORIES_EXPENDED,
+                DataSource.TYPE_RAW,
+                sample.getDouble("value"),
+                (long) sample.getDouble("date") - 3600,              // start time
+                TimeUnit.MILLISECONDS                // Time Unit, for example, TimeUnit.MILLISECONDS
+        );
+        new CalorieHistory.InsertAndVerifyDataTask(dataSet).execute();
+
+        return true;
+    }
+
+    /**
+     * This method creates a dataset object to be able to insert data in google fit
+     * @param dataType DataType Fitness Data Type object
+     * @param dataSourceType int Data Source Id. For example, DataSource.TYPE_RAW
+     * @param value Object Values for the fitness data. They must be int or float
+     * @param startTime long Time when the fitness activity started
+     * @param timeUnit TimeUnit Time unit in which period is expressed
+     * @return
+     */
+    private DataSet createDataCalorieForRequest(DataType dataType, int dataSourceType, Double value,
+                                         long startTime, TimeUnit timeUnit) {
+        DataSource dataSource = new DataSource.Builder()
+                .setAppPackageName(GoogleFitPackage.PACKAGE_NAME)
+                .setDataType(dataType)
+                .setType(dataSourceType)
+                .build();
+
+        Calendar calendar = Calendar.getInstance();
+        Date now = new Date();
+        calendar.setTime(now);
+        long endTime = calendar.getTimeInMillis();
+
+        DataSet dataSet = DataSet.create(dataSource);
+        DataPoint dataPoint = dataSet.createDataPoint().setTimeInterval(startTime, endTime, timeUnit);
+
+        float f1 = Float.valueOf(value.toString());
+        dataPoint.getValue(Field.FIELD_CALORIES).setFloat(f1);
+
+        dataSet.add(dataPoint);
+
+        return dataSet;
+    }
+
 }

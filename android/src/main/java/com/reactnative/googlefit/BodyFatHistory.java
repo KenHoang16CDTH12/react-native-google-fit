@@ -55,10 +55,8 @@ public class BodyFatHistory {
         Log.i(TAG, "Range Start: " + dateFormat.format(startTime));
         Log.i(TAG, "Range End: " + dateFormat.format(endTime));
 
-        //Check how much distance were walked and recorded in specified days
         DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_BODY_FAT_PERCENTAGE, DataType.AGGREGATE_BODY_FAT_PERCENTAGE_SUMMARY)
-                .bucketByTime(1, TimeUnit.DAYS)
+                .read(DataType.TYPE_BODY_FAT_PERCENTAGE)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
 
