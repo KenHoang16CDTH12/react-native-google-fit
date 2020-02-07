@@ -69,10 +69,8 @@ public class HeartHistory {
         DataReadRequest.Builder readRequestBuilder = new DataReadRequest.Builder()
                 .read(this.dataType)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS);
-        if (this.dataType == HealthDataTypes.TYPE_BLOOD_PRESSURE) {
+        if (this.dataType == HealthDataTypes.TYPE_BLOOD_PRESSURE || this.dataType == HealthDataTypes.TYPE_BLOOD_GLUCOSE) {
             readRequestBuilder.bucketByTime(1, TimeUnit.DAYS);
-        } else {
-            readRequestBuilder.setLimit(5); // need only one height, since it's unchangable
         }
 
         DataReadRequest readRequest = readRequestBuilder.build();

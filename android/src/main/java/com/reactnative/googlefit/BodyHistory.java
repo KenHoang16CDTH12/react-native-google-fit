@@ -89,7 +89,6 @@ public class BodyHistory {
                 .bucketByTime((int)bucketSizeMillis, TimeUnit.MILLISECONDS);
         } else {
             readRequestBuilder.read(this.dataType);
-            readRequestBuilder.setLimit(1); // need only one height, since it's unchangable
         }
 
         DataReadRequest readRequest = readRequestBuilder.build();

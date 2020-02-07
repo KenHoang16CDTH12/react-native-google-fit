@@ -63,8 +63,7 @@ public class CalorieHistory {
 
         //Check how much calories were expended in specific days.
         DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
-                .bucketByTime(1, TimeUnit.DAYS)
+                .read(DataType.TYPE_CALORIES_EXPENDED)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
 
@@ -137,7 +136,6 @@ public class CalorieHistory {
         DateFormat dateFormat = DateFormat.getDateInstance();
         DateFormat timeFormat = DateFormat.getTimeInstance();
         Format formatter = new SimpleDateFormat("EEE");
-        WritableMap stepMap = Arguments.createMap();
 
 
         for (DataPoint dp : dataSet.getDataPoints()) {
@@ -150,12 +148,13 @@ public class CalorieHistory {
             Log.i(TAG, "Day: " + day);
 
             for (Field field : dp.getDataType().getFields()) {
-                Log.i("History", "\tField: " + field.getName() +
+                Log.i(TAG, "\tField: " + field.getName() +
                         " Value: " + dp.getValue(field));
 
-                stepMap.putString("day", day);
-                stepMap.putDouble("startDate", dp.getStartTime(TimeUnit.MILLISECONDS));
-                stepMap.putDouble("endDate", dp.getEndTime(TimeUnit.MILLISECONDS));
+                WritableMap calorieMap = Arguments.createMap();
+                calorieMap.putString("day", day);
+                calorieMap.putDouble("startDate", dp.getStartTime(TimeUnit.MILLISECONDS));
+                calorieMap.putDouble("endDate", dp.getEndTime(TimeUnit.MILLISECONDS));
                 float basal = 0;
                 if (basalCalculation) {
                     try {
@@ -164,8 +163,8 @@ public class CalorieHistory {
                         e.printStackTrace();
                     }
                 }
-                stepMap.putDouble("calorie", dp.getValue(field).asFloat() - basal);
-                map.pushMap(stepMap);
+                calorieMap.putDouble("calorie", dp.getValue(field).asFloat() - basal);
+                map.pushMap(calorieMap);
             }
         }
     }
